@@ -11,18 +11,19 @@
         var bulletActive = settings.bulletActive;
         $.each($(this), function (index, container) {
 
-            var $content = $(this).css("overflow", "hidden");
+            var $content = $(this);
             var useLineHeight = parseInt($content.css('line-height'));
             var nanLineHeight = parseInt($content.css('font-size')) * 1.4;
             var lineHeight = isNaN(useLineHeight) == false ? useLineHeight : nanLineHeight;
             var multi = line;
             var thisClone = $(this.cloneNode(true)).hide()
-                .css('position', 'absolute')
-                .css('overflow', 'visible')
+                .css({'position':'absolute','overflow':'visible','maxHeight':'none'})
                 .width(multi ? $content.width() : 'auto')
                 .height(multi ? 'auto' : $content.height());
+            
 
             $content.after(thisClone);
+            console.log(thisClone);
 
             function height() {
                 if (line) {
@@ -47,6 +48,7 @@
             while (text.length > 0) {
                 thisClone.html(text);
                 text = text.substr(0, text.length - 1);
+                console.log(thisClone.height())
 
                 if(!func()){
                     set_text(text);
@@ -60,12 +62,14 @@
     };
 })(jQuery);
 
-ex)
+
+// ex)
+// 로딩 시 데이터 많을 경우 느림
+// 기본적인 높이값(height or max-height) , overflow:hidden 지정 필요
+
 $('.post-title').ellipsis();
 $('.post-content-text').ellipsis({line:2});
+
 $('.ellipsis').ellipsis();
 $('.ellipsis-line2').ellipsis({line:2});
-.
-.
-.
 
