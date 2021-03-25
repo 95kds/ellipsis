@@ -1,64 +1,61 @@
+(function ($) {
 
-        (function ($) {
+    $.fn.ellipsis = function (options) {
+        var settings = $.extend({
+            // 기본 설정
+            line: null,
+            bulletActive:true,
+        }, options);
 
-            $.fn.ellipsis = function (options) {
-                var settings = $.extend({
-                    // 기본 설정
-                    line: 1, 
-                }, options);
+        var line = settings.line;
+        var bulletActive = settings.bulletActive;
+        $.each($(this), function (index, container) {
 
-                var line = settings.line;
-                $.each($(this), function (index, container) {
+            var $content = $(this).css("overflow", "hidden");
+            var useLineHeight = parseInt($content.css('line-height'));
+            var nanLineHeight = parseInt($content.css('font-size')) * 1.4;
+            var lineHeight = isNaN(useLineHeight) == false ? useLineHeight : nanLineHeight;
+            var multi = line;
+            var thisClone = $(this.cloneNode(true)).hide()
+                .css('position', 'absolute')
+                .css('overflow', 'visible')
+                .width(multi ? $content.width() : 'auto')
+                .height(multi ? 'auto' : $content.height());
 
-                    var $content = $(this).css("overflow", "hidden");
-                    var useLineHeight = parseInt($content.css('line-height'));
-                    var nanLineHeight = parseInt($content.css('font-size')) * 1.4;
-                    var lineHeight = isNaN(useLineHeight) == false ? useLineHeight : nanLineHeight;
-                    var multiline = $content.hasClass('multiline');
-                    var thisClone = $(this.cloneNode(true)).hide()
-                        .css('position', 'absolute')
-                        .css('overflow', 'visible')
-                        .width(multiline ? $content.width() : 'auto')
-                        .height(multiline ? 'auto' : $content.height());
+            $content.after(thisClone);
 
-                    $content.after(thisClone);
-
-                    function height() {
-                        if (line) {
-                            return thisClone.height() > lineHeight * line;
-                        } else {
-                            return thisClone.height() > $content.height();
-                        }
-                    };
-
-                    function width() {
-                        return thisClone.width() > $content.width();
-                    };
-                    
-                    var text = thisClone.html();
-                    var func = multiline ? height : width;
-                    while (text.length > 0 && func()) {
-                        text = text.substr(0, text.length - 1);
-                        thisClone.html(text + "...");
-                    }
-
-                    $content.html(thisClone.html());
-                    thisClone.remove();
-                    console.log(func());
-                });
+            function height() {
+                if (line) {
+                    return thisClone.height() > lineHeight * line;
+                } else {
+                    return thisClone.height() > $content.height();
+                }
             };
-        })(jQuery);
-        
-        
-        //line 값이 없을때 height에 맞춰 텍스트 생략
-        // $('.ellipsis').ellipsis();
 
+            function width() {
+                return thisClone.width() > $content.width();
+            };
 
-        //line 값이 존재 할때 line 수에 맞춰 텍스트 생략
-        //height과 line 모두 존재할때 line 수에 맞게 텍스트만 생략 
-        // $('.ellipsis').ellipsis(2);
-        
-        
-        $('.ellipsis').ellipsis({
-            line: 3,
+            function set_text(elem){
+                elem = elem.trim();
+                bulletActive ? thisClone.html(elem + "...") : '';
+            };
+            
+            var text = thisClone.html();
+            var func = multi ? height : width;
+     
+            while (text.length > 0) {
+                thisClone.html(text);
+                text = text.substr(0, text.length - 1);
+
+                if(!func()){
+                    set_text(text);
+                    break;
+                }
+            }
+            
+            $content.html(thisClone.html());
+            thisClone.remove();
         });
+    };
+})(jQuery);
