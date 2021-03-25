@@ -59,3 +59,13 @@
         });
     };
 })(jQuery);
+
+ex)
+$('.post-title').ellipsis();
+$('.post-content-text').ellipsis({line:2});
+$('.ellipsis').ellipsis();
+$('.ellipsis-line2').ellipsis({line:2});
+.
+.
+.
+
